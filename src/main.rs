@@ -20,7 +20,7 @@ const COSMOS_SDK_VERSION: &str = "v0.47.5";
 // version of the WASMD version that we are using
 const WASMD_VERSION: &str = "v0.41.0";
 
-const INCLUDE_MODS: [&str; 11] = [
+const INCLUDE_MODS: [&str; 12] = [
     "/cosmos/auth",
     "/cosmos/authz",
     "/cosmos/bank",
@@ -29,6 +29,7 @@ const INCLUDE_MODS: [&str; 11] = [
     "/cosmos/feegrant",
     "/cosmos/staking",
     "/cosmos/nft",
+    "/cosmos/group",
     "/coreum/asset",
     "/coreum/nft",
     "/cosmwasm/wasm",
