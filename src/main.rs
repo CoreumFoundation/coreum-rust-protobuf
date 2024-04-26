@@ -16,7 +16,7 @@ use walkdir::{DirEntry, WalkDir};
 const OUT_DIR: &str = "transformed-protos";
 
 // version of the Cosmos SDK that we are using
-const COSMOS_SDK_VERSION: &str = "v0.47.5";
+const COSMOS_SDK_VERSION: &str = "v0.47.11";
 // version of the WASMD version that we are using
 const WASMD_VERSION: &str = "v0.44.0";
 
