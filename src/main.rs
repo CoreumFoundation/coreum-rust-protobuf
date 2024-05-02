@@ -158,7 +158,7 @@ fn main() {
             .unwrap()
             .to_string();
 
-        if file_name.starts_with("descriptor") || file_name.starts_with("buf"){
+        if file_name.starts_with("descriptor") || file_name.starts_with("buf") {
             continue;
         }
 
@@ -179,6 +179,7 @@ fn main() {
                     let s = transformers::add_derive_eq_struct(&s);
                     let s =
                         transformers::append_attrs_struct(entry.path(), &s, &file_descriptor_set);
+                    let s = transformers::make_next_key_optional(s);
                     let s = transformers::serde_alias_id_with_uppercased(s);
                     transformers::allow_serde_int_as_str(s)
                 }),
@@ -206,8 +207,12 @@ fn main() {
         fs::write(dir_out.join(file_name), &*contents).unwrap();
     }
 
-    remove_dir_all(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path::Path::new("proto"))).unwrap_or_default();
-    remove_dir_all(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path::Path::new("proto-generated"))).unwrap_or_default();
+    remove_dir_all(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path::Path::new("proto")))
+        .unwrap_or_default();
+    remove_dir_all(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path::Path::new("proto-generated")),
+    )
+    .unwrap_or_default();
 }
 
 fn prepend(items: Vec<Item>) -> Vec<Item> {
