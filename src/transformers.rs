@@ -147,7 +147,7 @@ pub fn append_attrs_enum(src: &Path, e: &ItemEnum, descriptor: &FileDescriptorSe
     e
 }
 
-pub fn allow_serde_int_as_str(s: ItemStruct) -> ItemStruct {
+/*pub fn allow_serde_int_as_str(s: ItemStruct) -> ItemStruct {
     let fields_vec = s
         .fields
         .clone()
@@ -189,7 +189,7 @@ pub fn allow_serde_int_as_str(s: ItemStruct) -> ItemStruct {
     let fields = syn::Fields::Named(fields_named);
 
     syn::ItemStruct { fields, ..s }
-}
+}*/
 
 /// some of proto's fields in osmosis' modules are named `ID` but prost generates `id` field
 /// this function adds `#[serde(alias = "ID")]` to the `id` field
@@ -255,6 +255,104 @@ pub fn make_next_key_optional(mut s: ItemStruct) -> ItemStruct {
     }
 
     s
+}
+
+pub fn modify_page_response(s: ItemStruct) -> ItemStruct {
+    let fields_vec = s
+        .fields
+        .clone()
+        .into_iter()
+        .map(|mut field| {
+            if let Some(ident) = &field.ident {
+                let ident_str = ident.to_string();
+                if s.ident == "PageResponse" {
+                    if ident_str == "total" {
+                        let serde_serialize: syn::Attribute = parse_quote! {
+                            #[serde(
+                                serialize_with = "crate::serde::as_str::serialize",
+                                deserialize_with = "crate::serde::as_str::deserialize"
+                            )]
+                        };
+                        field.attrs.append(&mut vec![serde_serialize]);
+                        field
+                    }
+                    else if ident_str == "next_key" {
+                        let serde_serialize: syn::Attribute = parse_quote! {
+                            #[serde(
+                                serialize_with = "crate::serde::as_option_base64_encoded_string::serialize",
+                                deserialize_with = "crate::serde::as_option_base64_encoded_string::deserialize"
+                            )]
+                        };
+                        field.attrs.append(&mut vec![serde_serialize]);
+                        field
+                    }
+                    else {
+                        field
+                    }
+
+                } else {
+                    field
+                }
+            } else {
+                field
+            }
+        })
+        .collect::<Vec<syn::Field>>();
+
+    let fields_named: syn::FieldsNamed = parse_quote! {
+        { #(#fields_vec,)* }
+    };
+    let fields = syn::Fields::Named(fields_named);
+
+    syn::ItemStruct { fields, ..s }
+}
+
+pub fn make_features_deserialize(
+    src: &Path,
+    s: ItemStruct,
+    descriptor: &FileDescriptorSet,
+) -> ItemStruct {
+    let type_url = get_type_url(src, &s.ident, descriptor);
+    let fields_vec = s
+        .fields
+        .clone()
+        .into_iter()
+        .map(|mut field| {
+            if let Some(ident) = &field.ident {
+                let ident_str = ident.to_string();
+                if ident_str == "features" {
+                    if type_url.contains("nft") {
+                        let serde_deserialize: syn::Attribute = parse_quote! {
+                            #[serde(
+                                deserialize_with = "crate::serde::as_class_feature::deserialize"
+                            )]
+                        };
+                        field.attrs.append(&mut vec![serde_deserialize]);
+                        field
+                    } else {
+                        let serde_deserialize: syn::Attribute = parse_quote! {
+                            #[serde(
+                                deserialize_with = "crate::serde::as_feature::deserialize"
+                            )]
+                        };
+                        field.attrs.append(&mut vec![serde_deserialize]);
+                        field
+                    }
+                } else {
+                    field
+                }
+            } else {
+                field
+            }
+        })
+        .collect::<Vec<syn::Field>>();
+
+    let fields_named: syn::FieldsNamed = parse_quote! {
+        { #(#fields_vec,)* }
+    };
+    let fields = syn::Fields::Named(fields_named);
+
+    syn::ItemStruct { fields, ..s }
 }
 
 // ====== helpers ======

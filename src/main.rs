@@ -179,9 +179,11 @@ fn main() {
                     let s = transformers::add_derive_eq_struct(&s);
                     let s =
                         transformers::append_attrs_struct(entry.path(), &s, &file_descriptor_set);
+                    let s = transformers::modify_page_response(s);
                     let s = transformers::make_next_key_optional(s);
                     let s = transformers::serde_alias_id_with_uppercased(s);
-                    transformers::allow_serde_int_as_str(s)
+                    transformers::make_features_deserialize(entry.path(), s, &file_descriptor_set)
+                    //transformers::allow_serde_int_as_str(s)
                 }),
 
                 Item::Enum(e) => Item::Enum({
