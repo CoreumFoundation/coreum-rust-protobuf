@@ -257,7 +257,7 @@ pub fn make_next_key_optional(mut s: ItemStruct) -> ItemStruct {
     s
 }
 
-pub fn modify_page_response(s: ItemStruct) -> ItemStruct {
+/*pub fn modify_page_response(s: ItemStruct) -> ItemStruct {
     let fields_vec = s
         .fields
         .clone()
@@ -305,7 +305,7 @@ pub fn modify_page_response(s: ItemStruct) -> ItemStruct {
     let fields = syn::Fields::Named(fields_named);
 
     syn::ItemStruct { fields, ..s }
-}
+}*/
 
 pub fn make_features_deserialize(
     src: &Path,
