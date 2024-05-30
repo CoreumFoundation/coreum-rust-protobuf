@@ -20,11 +20,12 @@ const COSMOS_SDK_VERSION: &str = "v0.47.11";
 // version of the WASMD version that we are using
 const WASMD_VERSION: &str = "v0.44.0";
 
-const INCLUDE_MODS: [&str; 12] = [
+const INCLUDE_MODS: [&str; 13] = [
     "/cosmos/auth",
     "/cosmos/authz",
     "/cosmos/bank",
     "/cosmos/base",
+    "/cosmos/distribution",
     "/cosmos/gov",
     "/cosmos/feegrant",
     "/cosmos/staking",
