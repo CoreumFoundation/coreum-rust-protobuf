@@ -16,11 +16,11 @@ use walkdir::{DirEntry, WalkDir};
 const OUT_DIR: &str = "transformed-protos";
 
 // version of the Cosmos SDK that we are using
-const COSMOS_SDK_VERSION: &str = "v0.47.11";
+const COSMOS_SDK_VERSION: &str = "v0.50.9";
 // version of the WASMD version that we are using
-const WASMD_VERSION: &str = "v0.45.0";
+const WASMD_VERSION: &str = "v0.53.0";
 
-const INCLUDE_MODS: [&str; 13] = [
+const INCLUDE_MODS: [&str; 14] = [
     "/cosmos/auth",
     "/cosmos/authz",
     "/cosmos/bank",
@@ -32,8 +32,9 @@ const INCLUDE_MODS: [&str; 13] = [
     "/cosmos/nft",
     "/cosmos/group",
     "/coreum/asset",
-    "/coreum/nft",
+    "/coreum/dex",
     "/cosmwasm/wasm",
+    "/tendermint",
 ];
 
 fn main() {
@@ -222,7 +223,7 @@ fn prepend(items: Vec<Item>) -> Vec<Item> {
     let mut items = items;
 
     let mut prepending_items = vec![syn::parse_quote! {
-        use osmosis_std_derive::CosmwasmExt;
+        use coreum_std_derive::CosmwasmExt;
     }];
 
     items.splice(0..0, prepending_items.drain(..));
