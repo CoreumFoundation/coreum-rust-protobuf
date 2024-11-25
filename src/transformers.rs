@@ -16,7 +16,7 @@ use syn::{parse_quote, Attribute, Fields, Ident, Item, ItemStruct, Type};
 /// Regex substitutions to apply to the prost-generated output
 pub const REPLACEMENTS: &[(&str, &str)] = &[
     // Use `tendermint-proto` proto definitions
-    ("(super::)+tendermint", "tendermint_proto"),
+    ("(super::)+tendermint", "tendermint"),
     // Feature-gate gRPC client modules
     (
         "/// Generated client implementations.",
